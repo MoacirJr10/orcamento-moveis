@@ -1,8 +1,9 @@
-package  com.seuprojeto.orcamento.security;
+package com.seuprojeto.orcamento.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -10,20 +11,26 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
-    private String secretKey = "101230"
+    private final String secretKey = "10123010123010123010123010123010"; // deve ter pelo menos 32 bytes
 
     public String generateToken(String username) {
-        return jwts.builder()
+        return Jwts.builder()
                 .setSubject(username)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 1 hora
-                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()), SignatureAlgorithm.HS256)
                 .compact();
     }
-    public String extractUsername(String token){
+
+    public String extractUsername(String token) {
         return getClaims(token).getSubject();
     }
+
     private Claims getClaims(String token) {
-        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
+        return Jwts.parserBuilder()
+                .setSigningKey(Keys.hmacShaKeyFor(secretKey.getBytes()))
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
     }
 }

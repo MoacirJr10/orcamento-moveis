@@ -5,8 +5,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.PostConstruct;
-import javax.util.TimeZone;
+
+import jakarta.annotation.PostConstruct;
+import java.util.TimeZone;
 
 @SpringBootApplication
 public class OrcamentoMoveisApplication {
@@ -23,7 +24,7 @@ public class OrcamentoMoveisApplication {
 	   }
 
 
-@Postconstruct
+@PostConstruct
 public void init(){
 		   TimeZone.setDefault(TimeZone.getTimeZone("America/Sao_Paulo"));
 		   logger.info("Fuso horário padrão definido para America/Sao_Paulo.");

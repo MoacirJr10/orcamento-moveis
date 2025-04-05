@@ -1,7 +1,6 @@
-package com.seuprojeto.orcamento.controller;
+package com.seuprojeto.orcamento;
 
-import com.seuprojeto.orcamento.Cliente;
-import com.serprojeto.orcamento.ClienteRepository;
+import com.seuprojeto.orcamento.services.ClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,7 +10,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/clientes")
-    public class ClientesController{
+    public class ClienteController {
 
     @Autowired
     private ClienteRepository clienteRepository;
@@ -22,8 +21,8 @@ import java.util.Optional;
     }
 
     @GetMapping("/{id}")
-    public ResponseEntire<Clinte> buscarCliente(@PathVariable Long id){
-        Optional<Cliete> cliente = clienteeRepository.findById(id);
+    public ResponseEntity<Cliente> buscarCliente(@PathVariable Long id){
+        Optional<Cliente> cliente = clienteRepository.findById(id);
         return cliente.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -37,11 +36,11 @@ import java.util.Optional;
     public ResponseEntity<Cliente> atualizarCliente(@PathVariable Long id, @RequestBody Cliente clienteAtualizado){
         return clienteRepository.findById(id)
                 .map(cliente -> {
-                    cliente.setNome(clienteAtualizado.getNome());
-                    cliente.setEmail(clienteAtualizado.getEmail());
+                    cliente.setNome    (clienteAtualizado.getNome());
+                    cliente.setEmail   (clienteAtualizado.getEmail());
                     cliente.setTelefone(clienteAtualizado.getTelefone());
                     Cliente atualizado = clienteRepository.save(cliente);
-                    return ResponseEntity.ok(clienteRepository.save(cliente));)
+                    return ResponseEntity.ok(clienteRepository.save(cliente));
                 })
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }

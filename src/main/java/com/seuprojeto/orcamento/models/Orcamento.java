@@ -1,13 +1,14 @@
 package com.seuprojeto.orcamento.models;
 
+import com.seuprojeto.orcamento.Cliente;
 import jakarta.persistence.*;
 import lombok.Data;
-import java.util.list;
+import java.math.BigDecimal;
+import java.util.List;
 
 @Entity
 @Data
-
-public class Orcamento{
+public class Orcamento {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -16,8 +17,8 @@ public class Orcamento{
     @JoinColumn(name = "cliente_id")
     private Cliente cliente;
 
-    @OneToMany(mappedBy = "orcamento", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "orcamento", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemOrcamento> itens;
 
-    private double total;
+    private BigDecimal total;
 }
