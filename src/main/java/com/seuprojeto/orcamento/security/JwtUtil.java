@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import java.util.Date;
 
 @Component
-public class JwtsUtil {
+public class JwtUtil {
 
     private final String secretKey = "10123010123010123010123010123010"; // deve ter pelo menos 32 bytes
 
