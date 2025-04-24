@@ -1,0 +1,14 @@
+<h2>Novo Orçamento</h2>
+<input [(ngModel)]="orcamento.cliente" placeholder="Cliente">
+<input [(ngModel)]="orcamento.descricao" placeholder="Descrição">
+<button (click)="adicionarItem()">+ Item</button>
+
+<div *ngFor="let item of orcamento.itens">
+  <input [(ngModel)]="item.nome" placeholder="Nome">
+  <input [(ngModel)]="item.largura" placeholder="Largura">
+  <input [(ngModel)]="item.altura" placeholder="Altura">
+  <input [(ngModel)]="item.profundidade" placeholder="Profundidade">
+  <input [(ngModel)]="item.preco" placeholder="Preço">
+</div>
+
+<button (click)="salvar()">Salvar Orçamento</button>
