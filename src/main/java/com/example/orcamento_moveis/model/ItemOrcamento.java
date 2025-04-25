@@ -1,4 +1,4 @@
-package com.exemplo.orcamentomoveis.model;
+package com.example.orcamento_moveis.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -18,5 +18,5 @@ public class ItemOrcamento {
 
     @ManyToOne
     @JoinColumn(name = "orcamento_id")
-    private Orcamento orcamento;
+    private com.example.orcamento_moveis.model.Orcamento orcamento;
 }

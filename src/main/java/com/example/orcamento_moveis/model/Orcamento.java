@@ -1,4 +1,4 @@
-package com.exemplo.orcamentomoveis.model;
+package com.example.orcamento_moveis.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -17,5 +17,5 @@ public class Orcamento {
     private double valorTotal;
 
     @OneToMany(mappedBy = "orcamento", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ItemOrcamento> itens;
+    private List<com.example.orcamento_moveis.model.ItemOrcamento> itens;
 }
