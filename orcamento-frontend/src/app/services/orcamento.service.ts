@@ -3,7 +3,6 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { Orcamento } from '../models/orcamento.model';
-import { OrcamentoListComponent } from './components/orcamento-list/orcamento-list.component';
 
 @Injectable({
 providedIn: 'root'

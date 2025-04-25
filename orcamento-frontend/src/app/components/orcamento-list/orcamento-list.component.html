@@ -1,0 +1,97 @@
+<div class="container">
+  <h1>Orçamentos de Móveis</h1>
+
+  <div class="actions">
+    <button (click)="novoOrcamento()" class="btn-primary">Novo Orçamento</button>
+  </div>
+
+  <div *ngIf="mensagem" class="alert" [ngClass]="'alert-' + tipoMensagem">
+    {{ mensagem }}
+  </div>
+
+  <div *ngIf="mostrarFormulario" class="form-container">
+    <h2>{{ modoEdicao ? 'Editar' : 'Novo' }} Orçamento</h2>
+    <form [formGroup]="orcamentoForm" (ngSubmit)="salvarOrcamento()">
+      <div class="form-group">
+        <label for="nomeCliente">Nome do Cliente</label>
+        <input
+          id="nomeCliente"
+          type="text"
+          formControlName="nomeCliente"
+          placeholder="Nome do cliente"
+        >
+        <div *ngIf="orcamentoForm.get('nomeCliente')?.invalid && orcamentoForm.get('nomeCliente')?.touched" class="error-message">
+          Nome do cliente é obrigatório e deve ter pelo menos 3 caracteres
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="data">Data</label>
+        <input
+          id="data"
+          type="date"
+          formControlName="data"
+          [value]="orcamentoForm.get('data')?.value | date:'yyyy-MM-dd'"
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="valorTotal">Valor Total</label>
+        <input
+          id="valorTotal"
+          type="number"
+          formControlName="valorTotal"
+          placeholder="Valor total do orçamento"
+          min="0"
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="observacoes">Observações</label>
+        <textarea
+          id="observacoes"
+          formControlName="observacoes"
+          placeholder="Observações sobre o orçamento"
+          rows="3"
+        ></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="status">Status</label>
+        <select id="status" formControlName="status">
+          <option value="PENDENTE">Pendente</option>
+          <option value="APROVADO">Aprovado</option>
+          <option value="REJEITADO">Rejeitado</option>
+        </select>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn-primary">Salvar</button>
+        <button type="button" class="btn-secondary" (click)="cancelar()">Cancelar</button>
+      </div>
+    </form>
+  </div>
+
+  <div *ngIf="orcamentos.length === 0" class="empty-state">
+    Nenhum orçamento encontrado. Clique em "Novo Orçamento" para adicionar.
+  </div>
+
+  <div class="orcamento-list">
+    <div class="orcamento-card" *ngFor="let orcamento of orcamentos">
+      <div class="orcamento-header">
+        <h2>{{ orcamento.nomeCliente }}</h2>
+        <span class="status-badge" [ngClass]="'status-' + orcamento.status?.toLowerCase()">
+          {{ orcamento.status }}
+        </span>
+      </div>
+      <p><strong>Data:</strong> {{ orcamento.data | date:'dd/MM/yyyy' }}</p>
+      <p><strong>Valor Total:</strong> {{ orcamento.valorTotal | currency:'BRL' }}</p>
+      <p *ngIf="orcamento.observacoes"><strong>Observações:</strong> {{ orcamento.observacoes }}</p>
+
+      <div class="orcamento-actions">
+        <button class="btn-edit" (click)="editarOrcamento(orcamento)">Editar</button>
+        <button class="btn-delete" (click)="excluirOrcamento(orcamento.id!)">Excluir</button>
+      </div>
+    </div>
+  </div>
+</div>
