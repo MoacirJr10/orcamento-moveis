@@ -4,16 +4,19 @@ import { provideHttpClient, withFetch } from '@angular/common/http';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
 import { APP_INITIALIZER } from '@angular/core';
-import { routes } from './app/app.routes'; // Importe as rotas do arquivo de rotas
+import { routes } from './app/app.routes';
 
 bootstrapApplication(AppComponent, {
   providers: [
-    provideRouter(routes), // Use o objeto de rotas importado
+    provideRouter(routes),
     provideHttpClient(withFetch()),
     provideAnimations(),
     {
       provide: APP_INITIALIZER,
-      useFactory: () => { console.log('App initialized'); return Promise.resolve(); },
+      useFactory: () => () => {  // Note a função aninhada aqui
+        console.log('App initialized');
+        return Promise.resolve();
+      },
       multi: true
     }
   ]
