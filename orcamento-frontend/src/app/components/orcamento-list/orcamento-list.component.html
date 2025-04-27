@@ -1,49 +1,98 @@
 <div class="container">
   <h1>Orçamentos de Móveis</h1>
 
-  <div class="actions">
-    <button (click)="novoOrcamento()" class="btn-primary">Novo Orçamento</button>
+  <div class="top-actions">
+    <div class="search-container">
+      <input
+        type="text"
+        placeholder="Buscar orçamentos..."
+        (input)="buscarOrcamentos($event)"
+        class="search-input"
+      >
+      <span class="search-icon">🔍</span>
+    </div>
+    <button (click)="novoOrcamento()" class="btn-primary">
+      <i class="icon-plus"></i> Novo Orçamento
+    </button>
   </div>
 
   <div *ngIf="mensagem" class="alert" [ngClass]="'alert-' + tipoMensagem">
+    <span class="alert-icon" *ngIf="tipoMensagem === 'sucesso'">✓</span>
+    <span class="alert-icon" *ngIf="tipoMensagem === 'erro'">✗</span>
+    <span class="alert-icon" *ngIf="tipoMensagem === 'info'">ℹ</span>
     {{ mensagem }}
+    <button class="close-btn" (click)="mensagem = ''">×</button>
+  </div>
+
+  <div class="loading-overlay" *ngIf="carregando">
+    <div class="spinner"></div>
+    <p>Carregando...</p>
   </div>
 
   <div *ngIf="mostrarFormulario" class="form-container">
     <h2>{{ modoEdicao ? 'Editar' : 'Novo' }} Orçamento</h2>
     <form [formGroup]="orcamentoForm" (ngSubmit)="salvarOrcamento()">
       <div class="form-group">
-        <label for="nomeCliente">Nome do Cliente</label>
+        <label for="nomeCliente">Nome do Cliente *</label>
         <input
           id="nomeCliente"
           type="text"
           formControlName="nomeCliente"
           placeholder="Nome do cliente"
+          [ngClass]="{'invalid': orcamentoForm.get('nomeCliente')?.invalid && orcamentoForm.get('nomeCliente')?.touched}"
         >
-        <div *ngIf="orcamentoForm.get('nomeCliente')?.invalid && orcamentoForm.get('nomeCliente')?.touched" class="error-message">
-          Nome do cliente é obrigatório e deve ter pelo menos 3 caracteres
+        <div *ngIf="obterMensagemErro('nomeCliente')" class="error-message">
+          {{ obterMensagemErro('nomeCliente') }}
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="data">Data *</label>
+          <input
+            id="data"
+            type="date"
+            formControlName="data"
+            [ngClass]="{'invalid': orcamentoForm.get('data')?.invalid && orcamentoForm.get('data')?.touched}"
+          >
+          <div *ngIf="obterMensagemErro('data')" class="error-message">
+            {{ obterMensagemErro('data') }}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="valorTotal">Valor Total (R$) *</label>
+          <input
+            id="valorTotal"
+            type="number"
+            formControlName="valorTotal"
+            placeholder="0,00"
+            min="0"
+            step="0.01"
+            [ngClass]="{'invalid': orcamentoForm.get('valorTotal')?.invalid && orcamentoForm.get('valorTotal')?.touched}"
+          >
+          <div *ngIf="obterMensagemErro('valorTotal')" class="error-message">
+            {{ obterMensagemErro('valorTotal') }}
+          </div>
         </div>
       </div>
 
       <div class="form-group">
-        <label for="data">Data</label>
-        <input
-          id="data"
-          type="date"
-          formControlName="data"
-          [value]="orcamentoForm.get('data')?.value | date:'yyyy-MM-dd'"
+        <label for="status">Status *</label>
+        <select
+          id="status"
+          formControlName="status"
+          [ngClass]="{'invalid': orcamentoForm.get('status')?.invalid && orcamentoForm.get('status')?.touched}"
         >
-      </div>
-
-      <div class="form-group">
-        <label for="valorTotal">Valor Total</label>
-        <input
-          id="valorTotal"
-          type="number"
-          formControlName="valorTotal"
-          placeholder="Valor total do orçamento"
-          min="0"
-        >
+          <option value="PENDENTE">Pendente</option>
+          <option value="APROVADO">Aprovado</option>
+          <option value="REJEITADO">Rejeitado</option>
+          <option value="EM_ANDAMENTO">Em Andamento</option>
+          <option value="CONCLUIDO">Concluído</option>
+        </select>
+        <div *ngIf="obterMensagemErro('status')" class="error-message">
+          {{ obterMensagemErro('status') }}
+        </div>
       </div>
 
       <div class="form-group">
@@ -56,42 +105,85 @@
         ></textarea>
       </div>
 
-      <div class="form-group">
-        <label for="status">Status</label>
-        <select id="status" formControlName="status">
-          <option value="PENDENTE">Pendente</option>
-          <option value="APROVADO">Aprovado</option>
-          <option value="REJEITADO">Rejeitado</option>
-        </select>
-      </div>
-
       <div class="form-actions">
-        <button type="submit" class="btn-primary">Salvar</button>
         <button type="button" class="btn-secondary" (click)="cancelar()">Cancelar</button>
+        <button type="submit" class="btn-primary" [disabled]="carregando">
+          <span *ngIf="carregando" class="spinner-small"></span>
+          {{ carregando ? 'Salvando...' : 'Salvar' }}
+        </button>
       </div>
     </form>
   </div>
 
-  <div *ngIf="orcamentos.length === 0" class="empty-state">
-    Nenhum orçamento encontrado. Clique em "Novo Orçamento" para adicionar.
+  <div *ngIf="orcamentosFiltrados.length === 0 && !carregando" class="empty-state">
+    <div class="empty-icon">📋</div>
+    <h3>Nenhum orçamento encontrado</h3>
+    <p>Clique em "Novo Orçamento" para adicionar um novo registro.</p>
+    <button (click)="novoOrcamento()" class="btn-primary">Criar Orçamento</button>
   </div>
 
-  <div class="orcamento-list">
-    <div class="orcamento-card" *ngFor="let orcamento of orcamentos">
+  <div *ngIf="orcamentosFiltrados.length > 0 && !carregando" class="orcamento-list">
+    <div class="orcamento-card" *ngFor="let orcamento of getOrcamentosPaginados()">
       <div class="orcamento-header">
         <h2>{{ orcamento.nomeCliente }}</h2>
         <span class="status-badge" [ngClass]="'status-' + orcamento.status?.toLowerCase()">
-          {{ orcamento.status }}
+          {{ orcamento.status === 'EM_ANDAMENTO' ? 'Em Andamento' :
+             orcamento.status === 'CONCLUIDO' ? 'Concluído' : orcamento.status }}
         </span>
       </div>
-      <p><strong>Data:</strong> {{ orcamento.data | date:'dd/MM/yyyy' }}</p>
-      <p><strong>Valor Total:</strong> {{ orcamento.valorTotal | currency:'BRL' }}</p>
-      <p *ngIf="orcamento.observacoes"><strong>Observações:</strong> {{ orcamento.observacoes }}</p>
+      <div class="orcamento-details">
+        <p><strong>Data:</strong> {{ orcamento.data | date:'dd/MM/yyyy' }}</p>
+        <p><strong>Valor Total:</strong> {{ orcamento.valorTotal | currency:'BRL' }}</p>
+        <div *ngIf="orcamento.observacoes" class="observacoes">
+          <strong>Observações:</strong>
+          <p>{{ orcamento.observacoes }}</p>
+        </div>
+      </div>
 
       <div class="orcamento-actions">
-        <button class="btn-edit" (click)="editarOrcamento(orcamento)">Editar</button>
-        <button class="btn-delete" (click)="excluirOrcamento(orcamento.id!)">Excluir</button>
+        <button class="btn-edit" (click)="editarOrcamento(orcamento)" title="Editar">
+          <i class="icon-edit"></i> Editar
+        </button>
+        <button class="btn-delete" (click)="excluirOrcamento(orcamento.id!)" title="Excluir">
+          <i class="icon-delete"></i> Excluir
+        </button>
       </div>
     </div>
   </div>
+
+  <!-- Paginação -->
+  <div *ngIf="totalPaginas > 1 && !carregando" class="pagination">
+    <button
+      class="page-button"
+      [disabled]="paginaAtual === 1"
+      (click)="mudarPagina(paginaAtual - 1)"
+      title="Página anterior"
+    >
+      &laquo;
+    </button>
+
+    <span class="page-info">Página {{ paginaAtual }} de {{ totalPaginas }}</span>
+
+    <button
+      class="page-button"
+      [disabled]="paginaAtual === totalPaginas"
+      (click)="mudarPagina(paginaAtual + 1)"
+      title="Próxima página"
+    >
+      &raquo;
+    </button>
+  </div>
+
+  <!-- Diálogo de confirmação -->
+  <dialog id="confirmDialog" class="confirm-dialog">
+    <div class="dialog-content">
+      <h3>Confirmar Exclusão</h3>
+      <p>Tem certeza que deseja excluir este orçamento?</p>
+      <p class="warning-text">Esta ação não pode ser desfeita.</p>
+      <div class="dialog-actions">
+        <button class="btn-secondary" (click)="fecharDialogoConfirmacao(false)">Cancelar</button>
+        <button class="btn-delete" (click)="fecharDialogoConfirmacao(true)">Excluir</button>
+      </div>
+    </div>
+  </dialog>
 </div>
