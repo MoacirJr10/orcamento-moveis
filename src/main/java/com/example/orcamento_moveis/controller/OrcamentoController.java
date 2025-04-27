@@ -23,7 +23,7 @@ public class OrcamentoController {
         this.repository = repository;
     }
 
-    @PostMapping
+    @PostMapping(consumes = "application/json", produces = "application/json")
     public ResponseEntity<Orcamento> salvar(@RequestBody Orcamento orcamento) {
         try {
             if (orcamento == null) {
@@ -54,7 +54,6 @@ public class OrcamentoController {
                 }
             }
 
-
             double total = orcamento.getItens().stream()
                     .mapToDouble(item -> {
                         BigDecimal preco = BigDecimal.valueOf(item.getPreco());
@@ -64,7 +63,6 @@ public class OrcamentoController {
                                 .doubleValue();
                     })
                     .sum();
-
 
             total = BigDecimal.valueOf(total)
                     .setScale(2, RoundingMode.HALF_UP)
@@ -98,7 +96,6 @@ public class OrcamentoController {
             Optional<Orcamento> orcamento = repository.findById(id);
             if (orcamento.isPresent()) {
                 return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body("Funcionalidade não implementada ainda.");
-
             }
             return ResponseEntity.notFound().build();
         } catch (Exception e) {

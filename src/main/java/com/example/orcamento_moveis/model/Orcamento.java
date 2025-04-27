@@ -27,6 +27,6 @@ public class Orcamento {
     private double valorTotal;
 
     @OneToMany(mappedBy = "orcamento", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @JsonManagedReference
+    @JsonManagedReference(value = "orcamento-itens")
     private List<ItemOrcamento> itens;
 }

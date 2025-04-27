@@ -1,5 +1,6 @@
 package com.example.orcamento_moveis.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -39,6 +40,7 @@ public class ItemOrcamento {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "orcamento_id")
+    @JsonBackReference(value = "orcamento-itens")
     private Orcamento orcamento;
 
     public BigDecimal calcularValorTotal() {
