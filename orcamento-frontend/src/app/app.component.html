@@ -1,21 +1,72 @@
-<header class="app-header">
-  <div class="logo">
-    <h1>{{ title }}</h1>
+<header class="app-header" role="banner">
+  <div class="container">
+    <div class="logo">
+      <a routerLink="/" aria-label="Página inicial">
+        <h1 class="logo-text">{{ title }}</h1>
+      </a>
+    </div>
+
+    <!-- Menu principal acessível -->
+    <nav class="main-nav" aria-label="Navegação principal">
+      <ul class="nav-list">
+        <li class="nav-item">
+          <a routerLink="/orcamentos"
+             routerLinkActive="active"
+             [routerLinkActiveOptions]="{exact: true}"
+             aria-current="page">
+            Orçamentos
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/clientes" routerLinkActive="active">
+            Clientes
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/produtos" routerLinkActive="active">
+            Produtos
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/relatorios" routerLinkActive="active">
+            Relatórios
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Botão mobile menu (opcional) -->
+    <button class="mobile-menu-button" aria-label="Abrir menu" aria-expanded="false">
+      <span class="menu-icon"></span>
+    </button>
   </div>
-  <nav class="main-nav">
-    <ul>
-      <li><a href="#" class="active">Orçamentos</a></li>
-      <li><a href="#">Clientes</a></li>
-      <li><a href="#">Produtos</a></li>
-      <li><a href="#">Relatórios</a></li>
-    </ul>
-  </nav>
 </header>
 
-<main>
-  <app-orcamento-list></app-orcamento-list>
+<main class="main-content" role="main">
+  <div class="container">
+    <!-- Adicionado loading state -->
+    <app-loading-spinner *ngIf="loading"></app-loading-spinner>
+
+    <!-- Router outlet para conteúdo dinâmico -->
+    <router-outlet></router-outlet>
+
+    <!-- Fallback para quando não há rota específica -->
+    <app-orcamento-list *ngIf="!routerOutlet.isActivated"></app-orcamento-list>
+  </div>
 </main>
 
-<footer class="app-footer">
-  <p>&copy; {{ currentYear }} Sistema de Orçamentos de Móveis. Todos os direitos reservados.</p>
+<footer class="app-footer" role="contentinfo">
+  <div class="container">
+    <p class="copyright">
+      &copy; {{ currentYear }} {{ title }}. Todos os direitos reservados.
+    </p>
+
+    <nav class="footer-nav" aria-label="Navegação secundária">
+      <ul class="footer-links">
+        <li><a routerLink="/politica-privacidade">Política de Privacidade</a></li>
+        <li><a routerLink="/termos-uso">Termos de Uso</a></li>
+        <li><a routerLink="/contato">Contato</a></li>
+      </ul>
+    </nav>
+  </div>
 </footer>
