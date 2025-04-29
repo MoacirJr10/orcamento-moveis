@@ -1,24 +1,22 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
-import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { AppRoutingModule } from './app-routing.module';
 
 import { AppComponent } from './app.component';
-import { OrcamentoFormComponent } from './components/orcamento-form/orcamento-form.component';
 import { OrcamentoListComponent } from './components/orcamento-list/orcamento-list.component';
-import { AppRoutingModule } from './app-routing.module';
+import { OrcamentoFormComponent } from './components/orcamento-form/orcamento-form.component';
 
 @NgModule({
 declarations: [
 AppComponent,
-OrcamentoFormComponent,
-OrcamentoListComponent
+OrcamentoListComponent,
+OrcamentoFormComponent
 ],
 imports: [
 BrowserModule,
 HttpClientModule,
-ReactiveFormsModule,
 RouterModule,
 AppRoutingModule
 ],

@@ -4,9 +4,9 @@ import { OrcamentoListComponent } from './components/orcamento-list/orcamento-li
 import { OrcamentoFormComponent } from './components/orcamento-form/orcamento-form.component';
 
 const routes: Routes = [
-{ path: '', component: OrcamentoListComponent },
 { path: 'novo', component: OrcamentoFormComponent },
-{ path: 'editar/:id', component: OrcamentoFormComponent }
+{ path: '', component: OrcamentoListComponent },
+{ path: '**', redirectTo: '' }
 ];
 
 @NgModule({

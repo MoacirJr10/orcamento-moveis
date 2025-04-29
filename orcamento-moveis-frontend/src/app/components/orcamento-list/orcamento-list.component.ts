@@ -29,10 +29,4 @@ constructor(private orcamentoService: OrcamentoService) { }
       }
     });
   }
-
-  calcularTotal(itens: ItemOrcamento[]): number {
-    return itens.reduce((total, item) => {
-      return total + ((item.preco || 0) * (item.quantidade || 0));
-    }, 0);
-  }
 }
