@@ -1,0 +1,135 @@
+<div class="orcamento-form-container">
+  <h2>Novo Orçamento de Móveis Planejados</h2>
+
+  <form [formGroup]="orcamentoForm" (ngSubmit)="onSubmit()">
+    <div class="form-section">
+      <h3>Dados do Cliente</h3>
+
+      <div class="form-group">
+        <label for="cliente">Nome do Cliente:</label>
+        <input type="text" id="cliente" formControlName="cliente">
+        <div *ngIf="orcamentoForm.get('cliente')?.invalid && orcamentoForm.get('cliente')?.touched" class="error-message">
+          Nome do cliente é obrigatório e deve ter pelo menos 3 caracteres.
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="telefone">Telefone:</label>
+        <input type="text" id="telefone" formControlName="telefone" placeholder="Ex: 11999999999">
+        <div *ngIf="orcamentoForm.get('telefone')?.invalid && orcamentoForm.get('telefone')?.touched" class="error-message">
+          Telefone é obrigatório (10 ou 11 dígitos).
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="email">E-mail:</label>
+        <input type="email" id="email" formControlName="email">
+        <div *ngIf="orcamentoForm.get('email')?.invalid && orcamentoForm.get('email')?.touched" class="error-message">
+          E-mail válido é obrigatório.
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="endereco">Endereço:</label>
+        <textarea id="endereco" formControlName="endereco" rows="3"></textarea>
+        <div *ngIf="orcamentoForm.get('endereco')?.invalid && orcamentoForm.get('endereco')?.touched" class="error-message">
+          Endereço é obrigatório.
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <h3>Detalhes do Móvel</h3>
+
+      <div class="form-group">
+        <label for="ambiente">Ambiente:</label>
+        <select id="ambiente" formControlName="ambiente">
+          <option value="">Selecione um ambiente</option>
+          <option *ngFor="let ambiente of ambientes" [value]="ambiente">{{ ambiente }}</option>
+        </select>
+        <div *ngIf="orcamentoForm.get('ambiente')?.invalid && orcamentoForm.get('ambiente')?.touched" class="error-message">
+          Selecione um ambiente.
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="material">Material:</label>
+        <select id="material" formControlName="material" (change)="calcularValorTotal()">
+          <option value="">Selecione um material</option>
+          <option *ngFor="let material of materiais" [value]="material">{{ material }}</option>
+        </select>
+        <div *ngIf="orcamentoForm.get('material')?.invalid && orcamentoForm.get('material')?.touched" class="error-message">
+          Selecione um material.
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="cores">Cores/Acabamento:</label>
+        <input type="text" id="cores" formControlName="cores">
+        <div *ngIf="orcamentoForm.get('cores')?.invalid && orcamentoForm.get('cores')?.touched" class="error-message">
+          Especifique as cores ou acabamentos.
+        </div>
+      </div>
+
+      <div formGroupName="medidas" class="medidas-container">
+        <h4>Medidas (metros)</h4>
+
+        <div class="medidas-row">
+          <div class="form-group medida-item">
+            <label for="largura">Largura:</label>
+            <input type="number" id="largura" formControlName="largura" step="0.01" (change)="calcularValorTotal()">
+            <div *ngIf="orcamentoForm.get('medidas.largura')?.invalid && orcamentoForm.get('medidas.largura')?.touched" class="error-message">
+              Largura inválida.
+            </div>
+          </div>
+
+          <div class="form-group medida-item">
+            <label for="altura">Altura:</label>
+            <input type="number" id="altura" formControlName="altura" step="0.01" (change)="calcularValorTotal()">
+            <div *ngIf="orcamentoForm.get('medidas.altura')?.invalid && orcamentoForm.get('medidas.altura')?.touched" class="error-message">
+              Altura inválida.
+            </div>
+          </div>
+
+          <div class="form-group medida-item">
+            <label for="profundidade">Profundidade:</label>
+            <input type="number" id="profundidade" formControlName="profundidade" step="0.01" (change)="calcularValorTotal()">
+            <div *ngIf="orcamentoForm.get('medidas.profundidade')?.invalid && orcamentoForm.get('medidas.profundidade')?.touched" class="error-message">
+              Profundidade inválida.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="observacoes">Observações e Detalhes Adicionais:</label>
+        <textarea id="observacoes" formControlName="observacoes" rows="4"></textarea>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <h3>Prazos e Valores</h3>
+
+      <div class="form-group">
+        <label for="prazoEntrega">Prazo de Entrega (dias):</label>
+        <input type="number" id="prazoEntrega" formControlName="prazoEntrega" min="1">
+        <div *ngIf="orcamentoForm.get('prazoEntrega')?.invalid && orcamentoForm.get('prazoEntrega')?.touched" class="error-message">
+          Informe um prazo válido.
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="valorTotal">Valor Total (R$):</label>
+        <input type="number" id="valorTotal" formControlName="valorTotal" step="0.01">
+        <div *ngIf="orcamentoForm.get('valorTotal')?.invalid && orcamentoForm.get('valorTotal')?.touched" class="error-message">
+          Valor total inválido.
+        </div>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" routerLink="/orcamentos" class="btn-cancel">Cancelar</button>
+      <button type="submit" class="btn-submit" [disabled]="orcamentoForm.invalid">Enviar Orçamento</button>
+    </div>
+  </form>
+</div>

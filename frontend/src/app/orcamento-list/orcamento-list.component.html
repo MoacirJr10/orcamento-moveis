@@ -1,0 +1,96 @@
+<div class="orcamento-list-container">
+  <div class="header-section">
+    <h2>Lista de Orçamentos</h2>
+    <button routerLink="/novo-orcamento" class="btn-novo">Novo Orçamento</button>
+  </div>
+
+  <div class="filters-section">
+    <div class="search-box">
+      <input
+        type="text"
+        placeholder="Buscar por cliente, material ou ambiente..."
+        (input)="onSearchChange($event)"
+      >
+    </div>
+
+    <div class="status-filter">
+      <label for="statusFilter">Filtrar por status:</label>
+      <select id="statusFilter" (change)="onStatusFilterChange($event)">
+        <option value="todos">Todos</option>
+        <option value="Pendente">Pendente</option>
+        <option value="Aprovado">Aprovado</option>
+        <option value="Recusado">Recusado</option>
+        <option value="Em Produção">Em Produção</option>
+        <option value="Finalizado">Finalizado</option>
+      </select>
+    </div>
+  </div>
+
+  <div *ngIf="isLoading" class="loading">
+    Carregando orçamentos...
+  </div>
+
+  <div *ngIf="!isLoading && filteredOrcamentos.length === 0" class="no-results">
+    Nenhum orçamento encontrado com os filtros atuais.
+  </div>
+
+  <div class="orcamentos-grid" *ngIf="!isLoading && filteredOrcamentos.length > 0">
+    <table>
+      <thead>
+      <tr>
+        <th>ID</th>
+        <th>Cliente</th>
+        <th>Ambiente</th>
+        <th>Material</th>
+        <th>Valor Total</th>
+        <th>Data</th>
+        <th>Status</th>
+        <th>Ações</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let orcamento of filteredOrcamentos">
+        <td>{{ orcamento.id }}</td>
+        <td>
+          <div>{{ orcamento.cliente }}</div>
+          <div class="contato-info">
+            <small>{{ orcamento.email }}</small>
+            <small>{{ orcamento.telefone }}</small>
+          </div>
+        </td>
+        <td>{{ orcamento.ambiente }}</td>
+        <td>{{ orcamento.material }}</td>
+        <td>R$ {{ orcamento.valorTotal.toFixed(2) }}</td>
+        <td>{{ formatarData(orcamento.dataCriacao) }}</td>
+        <td>
+            <span class="status-badge" [ngClass]="getStatusClass(orcamento.status)">
+              {{ orcamento.status }}
+            </span>
+        </td>
+        <td class="acoes">
+          <div class="botoes-acao">
+            <button [routerLink]="['/orcamento', orcamento.id]" class="btn-view">
+              Ver
+            </button>
+
+            <div class="dropdown">
+              <button class="btn-status">Status ▼</button>
+              <div class="dropdown-content">
+                <a (click)="atualizarStatus(orcamento, 'Pendente')">Pendente</a>
+                <a (click)="atualizarStatus(orcamento, 'Aprovado')">Aprovado</a>
+                <a (click)="atualizarStatus(orcamento, 'Recusado')">Recusado</a>
+                <a (click)="atualizarStatus(orcamento, 'Em Produção')">Em Produção</a>
+                <a (click)="atualizarStatus(orcamento, 'Finalizado')">Finalizado</a>
+              </div>
+            </div>
+
+            <button (click)="excluirOrcamento(orcamento.id)" class="btn-delete">
+              Excluir
+            </button>
+          </div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
