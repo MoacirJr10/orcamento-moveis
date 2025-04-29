@@ -1,0 +1,82 @@
+<div class="card">
+  <div class="card-header">
+    <h5>{{ orcamentoId ? 'Editar' : 'Novo' }} Orçamento</h5>
+  </div>
+
+  <div class="card-body">
+    <form [formGroup]="orcamentoForm" (ngSubmit)="onSubmit()">
+      <!-- Campo Cliente -->
+      <div class="mb-3">
+        <label for="cliente" class="form-label">Cliente</label>
+        <input type="text" id="cliente" formControlName="cliente" class="form-control"
+               [class.is-invalid]="cliente.invalid && (cliente.dirty || cliente.touched)">
+        <div *ngIf="cliente.invalid && (cliente.dirty || cliente.touched)" class="invalid-feedback">
+          <div *ngIf="cliente.errors?.['required']">Nome do cliente é obrigatório</div>
+        </div>
+      </div>
+
+      <!-- Lista de Itens -->
+      <div formArrayName="itens" class="mb-4">
+        <h6>Itens do Orçamento</h6>
+
+        <div *ngFor="let item of itens.controls; let i = index" [formGroupName]="i" class="item-group mb-3 p-3 border rounded">
+          <div class="row">
+            <!-- Descrição -->
+            <div class="col-md-5">
+              <label [for]="'descricao'+i" class="form-label">Descrição</label>
+              <input [id]="'descricao'+i" type="text" formControlName="descricao" class="form-control"
+                     [class.is-invalid]="getItemControl(i, 'descricao').invalid && (getItemControl(i, 'descricao').dirty || getItemControl(i, 'descricao').touched)">
+              <div *ngIf="getItemControl(i, 'descricao').invalid && (getItemControl(i, 'descricao').dirty || getItemControl(i, 'descricao').touched)"
+                   class="invalid-feedback">
+                Descrição é obrigatória
+              </div>
+            </div>
+
+            <!-- Preço -->
+            <div class="col-md-3">
+              <label [for]="'preco'+i" class="form-label">Preço Unitário</label>
+              <div class="input-group">
+                <span class="input-group-text">R$</span>
+                <input [id]="'preco'+i" type="number" formControlName="preco" class="form-control" min="0" step="0.01"
+                       [class.is-invalid]="getItemControl(i, 'preco').invalid && (getItemControl(i, 'preco').dirty || getItemControl(i, 'preco').touched)">
+              </div>
+            </div>
+
+            <!-- Quantidade -->
+            <div class="col-md-2">
+              <label [for]="'quantidade'+i" class="form-label">Quantidade</label>
+              <input [id]="'quantidade'+i" type="number" formControlName="quantidade" class="form-control" min="1"
+                     [class.is-invalid]="getItemControl(i, 'quantidade').invalid && (getItemControl(i, 'quantidade').dirty || getItemControl(i, 'quantidade').touched)">
+            </div>
+
+            <!-- Botão Remover -->
+            <div class="col-md-2 d-flex align-items-end">
+              <button type="button" (click)="removerItem(i)" class="btn btn-outline-danger w-100">
+                <i class="bi bi-trash"></i> Remover
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <button type="button" (click)="adicionarItem()" class="btn btn-outline-secondary">
+          <i class="bi bi-plus-circle"></i> Adicionar Item
+        </button>
+      </div>
+
+      <!-- Total -->
+      <div class="mb-3 p-3 bg-light rounded">
+        <h6>Total: R$ {{ calcularTotalForm() | number:'1.2-2' }}</h6>
+      </div>
+
+      <!-- Botões de Ação -->
+      <div class="d-flex justify-content-between">
+        <button type="button" routerLink="/" class="btn btn-outline-secondary">
+          <i class="bi bi-arrow-left"></i> Voltar
+        </button>
+        <button type="submit" [disabled]="!orcamentoForm.valid" class="btn btn-primary">
+          <i class="bi bi-save"></i> Salvar
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,22 @@
+.navbar {
+  padding: 1rem 0;
+}
+
+.nav-link {
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.nav-link.active {
+  font-weight: 600;
+  color: #fff !important;
+  border-bottom: 2px solid #fff;
+}
+
+.nav-link:hover {
+  transform: translateY(-2px);
+}
+
+.container {
+  max-width: 1200px;
+}

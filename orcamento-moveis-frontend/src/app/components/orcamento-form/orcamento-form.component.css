@@ -1,0 +1,15 @@
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.item-group {
+  border: 1px solid #ddd;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 4px;
+}
+
+button {
+  margin-right: 0.5rem;
+}
+
