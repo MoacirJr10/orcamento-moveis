@@ -1,15 +1,59 @@
-.form-group {
-  margin-bottom: 1rem;
+.card {
+  max-width: 1200px;
+  margin: 2rem auto;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.card-header {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+  padding: 1.25rem 1.5rem;
+}
+
+.card-header h5 {
+  margin: 0;
+  font-weight: 600;
 }
 
 .item-group {
-  border: 1px solid #ddd;
-  padding: 1rem;
-  margin-bottom: 1rem;
-  border-radius: 4px;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 0.375rem;
+  transition: all 0.2s;
 }
 
-button {
+.item-group:hover {
+  background-color: #e9ecef;
+}
+
+.form-label {
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.invalid-feedback {
+  font-size: 0.875rem;
+}
+
+.btn {
+  font-weight: 500;
+}
+
+.btn-primary {
+  min-width: 120px;
+}
+
+.bi {
   margin-right: 0.5rem;
 }
 
+/* Responsividade */
+@media (max-width: 768px) {
+  .card {
+    margin: 1rem;
+  }
+
+  .row > div {
+    margin-bottom: 1rem;
+  }
+}

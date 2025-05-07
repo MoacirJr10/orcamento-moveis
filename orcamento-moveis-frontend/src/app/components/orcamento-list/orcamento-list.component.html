@@ -1,53 +1,120 @@
 <div class="card">
   <div class="card-header d-flex justify-content-between align-items-center">
     <h5>Lista de Orçamentos</h5>
-    <button routerLink="/novo" class="btn btn-success">
-      <i class="bi bi-plus-circle"></i> Novo Orçamento
-    </button>
+    <div>
+      <button routerLink="/orcamentos/novo" class="btn btn-success">
+        <i class="bi bi-plus-circle"></i> Novo Orçamento
+      </button>
+    </div>
   </div>
 
   <div class="card-body">
-    <div *ngIf="loading" class="text-center">
-      <div class="spinner-border text-primary" role="status">
-        <span class="visually-hidden">Carregando...</span>
+    <!-- Filtros -->
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <div class="input-group">
+          <label>
+            <input type="text" class="form-control" placeholder="Buscar por cliente..."
+                   [(ngModel)]="searchTerm" (keyup.enter)="onSearch()">
+          </label>
+          <button class="btn btn-outline-secondary" type="button" (click)="onSearch()">
+            <i class="bi bi-search"></i>
+          </button>
+        </div>
+      </div>
+      <div class="col-md-6 text-end">
+        <div class="btn-group">
+          <button class="btn btn-outline-secondary" [class.active]="itemsPerPage === 10" (click)="itemsPerPage = 10; carregarOrcamentos()">10</button>
+          <button class="btn btn-outline-secondary" [class.active]="itemsPerPage === 25" (click)="itemsPerPage = 25; carregarOrcamentos()">25</button>
+          <button class="btn btn-outline-secondary" [class.active]="itemsPerPage === 50" (click)="itemsPerPage = 50; carregarOrcamentos()">50</button>
+        </div>
       </div>
     </div>
 
-    <div *ngIf="!loading && orcamentos.length === 0" class="alert alert-info">
-      Nenhum orçamento cadastrado ainda.
+    <!-- Mensagem de erro -->
+    <div *ngIf="errorMessage" class="alert alert-danger">
+      {{ errorMessage }}
     </div>
 
-    <table *ngIf="!loading && orcamentos.length > 0" class="table table-striped table-hover">
-      <!-- Cabeçalho da tabela -->
-      <thead>
-      <tr>
-        <th>ID</th>
-        <th>Cliente</th>
-        <th>Valor Total</th>
-        <th>Data</th>
-        <th>Ações</th>
-      </tr>
-      </thead>
+    <!-- Loading -->
+    <div *ngIf="loading" class="text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Carregando...</span>
+      </div>
+      <p class="mt-2">Carregando orçamentos...</p>
+    </div>
 
-      <!-- Corpo da tabela -->
-      <tbody>
-      <tr *ngFor="let orcamento of orcamentos">
-        <td>{{ orcamento.id }}</td>
-        <td>{{ orcamento.cliente }}</td>
-        <td>R$ {{ calcularTotal(orcamento.itens) | number:'1.2-2' }}</td>
-        <td>{{ orcamento.dataCriacao | date:'dd/MM/yyyy' }}</td>
-        <td>
-          <div class="btn-group">
-            <button [routerLink]="['/editar', orcamento.id]" class="btn btn-sm btn-primary">
-              <i class="bi bi-pencil"></i>
-            </button>
-            <button (click)="gerarPdf(orcamento.id!)" class="btn btn-sm btn-info">
-              <i class="bi bi-file-earmark-pdf"></i>
-            </button>
-          </div>
-        </td>
-      </tr>
-      </tbody>
-    </table>
+    <!-- Lista vazia -->
+    <div *ngIf="!loading && orcamentos.length === 0" class="alert alert-info">
+      Nenhum orçamento encontrado.
+    </div>
+
+    <!-- Tabela -->
+    <div *ngIf="!loading && orcamentos.length > 0" class="table-responsive">
+      <table class="table table-striped table-hover">
+        <thead class="table-light">
+        <tr>
+          <th (click)="onSort('id')" style="cursor: pointer;">
+            ID <i class="bi bi-arrow-down-up"></i>
+          </th>
+          <th (click)="onSort('cliente')" style="cursor: pointer;">
+            Cliente <i class="bi bi-arrow-down-up"></i>
+          </th>
+          <th (click)="onSort('valorTotal')" style="cursor: pointer;">
+            Valor Total <i class="bi bi-arrow-down-up"></i>
+          </th>
+          <th (click)="onSort('dataCriacao')" style="cursor: pointer;">
+            Data <i class="bi bi-arrow-down-up"></i>
+          </th>
+          <th>Status</th>
+          <th>Ações</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let orcamento of orcamentos">
+          <td>{{ orcamento.id }}</td>
+          <td>{{ orcamento.cliente }}</td>
+          <td>R$ {{ orcamento.valorTotal | number:'1.2-2' }}</td>
+          <td>{{ orcamento.dataCriacao | date:'dd/MM/yyyy' }}</td>
+          <td>
+              <span [class]="getStatusClass(orcamento.status)">
+                {{ orcamento.status || 'N/A' }}
+              </span>
+          </td>
+          <td>
+            <div class="btn-group btn-group-sm">
+              <button [routerLink]="['/orcamentos/editar', orcamento.id]" class="btn btn-primary" title="Editar">
+                <i class="bi bi-pencil"></i>
+              </button>
+              <button (click)="gerarPdf(orcamento.id!)" class="btn btn-info" title="Gerar PDF">
+                <i class="bi bi-file-earmark-pdf"></i>
+              </button>
+              <button [routerLink]="['/orcamentos', orcamento.id]" class="btn btn-secondary" title="Visualizar">
+                <i class="bi bi-eye"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+
+      <!-- Paginação -->
+      <div class="d-flex justify-content-between align-items-center mt-3">
+        <div>
+          Mostrando {{ (currentPage - 1) * itemsPerPage + 1 }} a
+          {{ Math.min(currentPage * itemsPerPage, totalItems) }} de {{ totalItems }} registros
+        </div>
+        <ngb-pagination
+          [collectionSize]="totalItems"
+          [(page)]="currentPage"
+          [pageSize]="itemsPerPage"
+          [maxSize]="5"
+          [rotate]="true"
+          [boundaryLinks]="true"
+          (pageChange)="onPageChange($event)"
+          aria-label="Paginação">
+        </ngb-pagination>
+      </div>
+    </div>
   </div>
 </div>

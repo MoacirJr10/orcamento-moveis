@@ -1,17 +1,63 @@
 <div class="card">
   <div class="card-header">
-    <h5>{{ orcamentoId ? 'Editar' : 'Novo' }} Orçamento</h5>
+    <h5>{{ isEditMode ? 'Editar' : 'Novo' }} Orçamento</h5>
   </div>
 
   <div class="card-body">
     <form [formGroup]="orcamentoForm" (ngSubmit)="onSubmit()">
-      <!-- Campo Cliente -->
-      <div class="mb-3">
-        <label for="cliente" class="form-label">Cliente</label>
-        <input type="text" id="cliente" formControlName="cliente" class="form-control"
-               [class.is-invalid]="cliente.invalid && (cliente.dirty || cliente.touched)">
-        <div *ngIf="cliente.invalid && (cliente.dirty || cliente.touched)" class="invalid-feedback">
-          <div *ngIf="cliente.errors?.['required']">Nome do cliente é obrigatório</div>
+      <!-- Seção de Informações do Cliente -->
+      <div class="mb-4 p-3 border rounded">
+        <h6>Informações do Cliente</h6>
+
+        <div class="row">
+          <!-- Cliente -->
+          <div class="col-md-6 mb-3">
+            <label for="cliente" class="form-label">Cliente*</label>
+            <input type="text" id="cliente" formControlName="cliente" class="form-control"
+                   [class.is-invalid]="cliente.invalid && (cliente.dirty || cliente.touched)">
+            <div *ngIf="cliente.invalid && (cliente.dirty || cliente.touched)" class="invalid-feedback">
+              <div *ngIf="cliente.errors?.['required']">Nome do cliente é obrigatório</div>
+            </div>
+          </div>
+
+          <!-- Telefone -->
+          <div class="col-md-6 mb-3">
+            <label for="telefone" class="form-label">Telefone</label>
+            <input type="text" id="telefone" formControlName="telefone" class="form-control">
+          </div>
+        </div>
+
+        <div class="row">
+          <!-- Email -->
+          <div class="col-md-6 mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" id="email" formControlName="email" class="form-control">
+          </div>
+
+          <!-- Forma de Pagamento -->
+          <div class="col-md-6 mb-3">
+            <label for="formaPagamento" class="form-label">Forma de Pagamento</label>
+            <select id="formaPagamento" formControlName="formaPagamento" class="form-select">
+              <option value="">Selecione...</option>
+              <option value="Dinheiro">Dinheiro</option>
+              <option value="Cartão">Cartão</option>
+              <option value="PIX">PIX</option>
+              <option value="Boleto">Boleto</option>
+              <option value="Financiado">Financiado</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Descrição -->
+        <div class="mb-3">
+          <label for="descricao" class="form-label">Descrição do Projeto</label>
+          <textarea id="descricao" formControlName="descricao" class="form-control" rows="2"></textarea>
+        </div>
+
+        <!-- Observações -->
+        <div class="mb-3">
+          <label for="observacoes" class="form-label">Observações</label>
+          <textarea id="observacoes" formControlName="observacoes" class="form-control" rows="2"></textarea>
         </div>
       </div>
 
@@ -20,38 +66,128 @@
         <h6>Itens do Orçamento</h6>
 
         <div *ngFor="let item of itens.controls; let i = index" [formGroupName]="i" class="item-group mb-3 p-3 border rounded">
-          <div class="row">
-            <!-- Descrição -->
-            <div class="col-md-5">
-              <label [for]="'descricao'+i" class="form-label">Descrição</label>
-              <input [id]="'descricao'+i" type="text" formControlName="descricao" class="form-control"
-                     [class.is-invalid]="getItemControl(i, 'descricao').invalid && (getItemControl(i, 'descricao').dirty || getItemControl(i, 'descricao').touched)">
-              <div *ngIf="getItemControl(i, 'descricao').invalid && (getItemControl(i, 'descricao').dirty || getItemControl(i, 'descricao').touched)"
+          <div class="row mb-3">
+            <!-- Nome do Item -->
+            <div class="col-md-6">
+              <label [for]="'nome'+i" class="form-label">Nome do Item*</label>
+              <label>
+                <input [id]="'nome'+i" type="text" formControlName="nome" class="form-control"
+                       [class.is-invalid]="getItemControl(i, 'nome').invalid && (getItemControl(i, 'nome').dirty || getItemControl(i, 'nome').touched)">
+              </label>
+              <div *ngIf="getItemControl(i, 'nome').invalid && (getItemControl(i, 'nome').dirty || getItemControl(i, 'nome').touched)"
                    class="invalid-feedback">
-                Descrição é obrigatória
+                Nome do item é obrigatório
               </div>
             </div>
 
+            <!-- Tipo de Móvel -->
+            <div class="col-md-6">
+              <label [for]="'tipoMovel'+i" class="form-label">Tipo de Móvel</label>
+              <label>
+                <input [id]="'tipoMovel'+i" type="text" formControlName="tipoMovel" class="form-control">
+              </label>
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <!-- Descrição -->
+            <div class="col-md-8">
+              <label [for]="'descricao'+i" class="form-label">Descrição</label>
+              <label>
+                <input [id]="'descricao'+i" type="text" formControlName="descricao" class="form-control">
+              </label>
+            </div>
+
+            <!-- Material -->
+            <div class="col-md-4">
+              <label [for]="'material'+i" class="form-label">Material</label>
+              <label>
+                <input [id]="'material'+i" type="text" formControlName="material" class="form-control">
+              </label>
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <!-- Dimensões -->
+            <div class="col-md-4">
+              <label [for]="'largura'+i" class="form-label">Largura (cm)</label>
+              <label>
+                <input [id]="'largura'+i" type="number" formControlName="largura" class="form-control" min="0" step="0.1">
+              </label>
+            </div>
+            <div class="col-md-4">
+              <label [for]="'altura'+i" class="form-label">Altura (cm)</label>
+              <label>
+                <input [id]="'altura'+i" type="number" formControlName="altura" class="form-control" min="0" step="0.1">
+              </label>
+            </div>
+            <div class="col-md-4">
+              <label [for]="'profundidade'+i" class="form-label">Profundidade (cm)</label>
+              <label>
+                <input [id]="'profundidade'+i" type="number" formControlName="profundidade" class="form-control" min="0" step="0.1">
+              </label>
+            </div>
+          </div>
+
+          <div class="row mb-3">
             <!-- Preço -->
-            <div class="col-md-3">
-              <label [for]="'preco'+i" class="form-label">Preço Unitário</label>
+            <div class="col-md-4">
+              <label [for]="'preco'+i" class="form-label">Preço Unitário*</label>
               <div class="input-group">
                 <span class="input-group-text">R$</span>
-                <input [id]="'preco'+i" type="number" formControlName="preco" class="form-control" min="0" step="0.01"
-                       [class.is-invalid]="getItemControl(i, 'preco').invalid && (getItemControl(i, 'preco').dirty || getItemControl(i, 'preco').touched)">
+                <label>
+                  <input [id]="'preco'+i" type="number" formControlName="preco" class="form-control" min="0" step="0.01"
+                         [class.is-invalid]="getItemControl(i, 'preco').invalid && (getItemControl(i, 'preco').dirty || getItemControl(i, 'preco').touched)">
+                </label>
+              </div>
+              <div *ngIf="getItemControl(i, 'preco').invalid && (getItemControl(i, 'preco').dirty || getItemControl(i, 'preco').touched)"
+                   class="invalid-feedback">
+                Preço deve ser maior ou igual a zero
               </div>
             </div>
 
             <!-- Quantidade -->
-            <div class="col-md-2">
-              <label [for]="'quantidade'+i" class="form-label">Quantidade</label>
-              <input [id]="'quantidade'+i" type="number" formControlName="quantidade" class="form-control" min="1"
-                     [class.is-invalid]="getItemControl(i, 'quantidade').invalid && (getItemControl(i, 'quantidade').dirty || getItemControl(i, 'quantidade').touched)">
+            <div class="col-md-4">
+              <label [for]="'quantidade'+i" class="form-label">Quantidade*</label>
+              <label>
+                <input [id]="'quantidade'+i" type="number" formControlName="quantidade" class="form-control" min="1"
+                       [class.is-invalid]="getItemControl(i, 'quantidade').invalid && (getItemControl(i, 'quantidade').dirty || getItemControl(i, 'quantidade').touched)">
+              </label>
+              <div *ngIf="getItemControl(i, 'quantidade').invalid && (getItemControl(i, 'quantidade').dirty || getItemControl(i, 'quantidade').touched)"
+                   class="invalid-feedback">
+                Quantidade deve ser pelo menos 1
+              </div>
+            </div>
+
+            <!-- Total do Item -->
+            <div class="col-md-4">
+              <label class="form-label">Total do Item</label>
+              <div class="form-control bg-light">
+                R$ {{ (getItemControl(i, 'preco').value * getItemControl(i, 'quantidade').value) | number:'1.2-2' }}
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <!-- Acabamento -->
+            <div class="col-md-6">
+              <label [for]="'acabamento'+i" class="form-label">Acabamento</label>
+              <label>
+                <input [id]="'acabamento'+i" type="text" formControlName="acabamento" class="form-control">
+              </label>
+            </div>
+
+            <!-- Cor -->
+            <div class="col-md-4">
+              <label [for]="'cor'+i" class="form-label">Cor</label>
+              <label>
+                <input [id]="'cor'+i" type="text" formControlName="cor" class="form-control">
+              </label>
             </div>
 
             <!-- Botão Remover -->
             <div class="col-md-2 d-flex align-items-end">
-              <button type="button" (click)="removerItem(i)" class="btn btn-outline-danger w-100">
+              <button type="button" (click)="removerItem(i)" class="btn btn-outline-danger w-100" [disabled]="itens.length <= 1">
                 <i class="bi bi-trash"></i> Remover
               </button>
             </div>
@@ -63,18 +199,26 @@
         </button>
       </div>
 
-      <!-- Total -->
-      <div class="mb-3 p-3 bg-light rounded">
-        <h6>Total: R$ {{ calcularTotalForm() | number:'1.2-2' }}</h6>
+      <!-- Total e Prazo -->
+      <div class="row mb-4">
+        <div class="col-md-8">
+          <div class="p-3 bg-light rounded">
+            <h6>Total: R$ {{ calcularTotalForm() | number:'1.2-2' }}</h6>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <label for="prazoEntregaDias" class="form-label">Prazo de Entrega (dias)</label>
+          <input type="number" id="prazoEntregaDias" formControlName="prazoEntregaDias" class="form-control" min="0">
+        </div>
       </div>
 
       <!-- Botões de Ação -->
       <div class="d-flex justify-content-between">
-        <button type="button" routerLink="/" class="btn btn-outline-secondary">
-          <i class="bi bi-arrow-left"></i> Voltar
+        <button type="button" [routerLink]="['/orcamentos']" class="btn btn-outline-secondary">
+          <i class="bi bi-arrow-left"></i> Cancelar
         </button>
         <button type="submit" [disabled]="!orcamentoForm.valid" class="btn btn-primary">
-          <i class="bi bi-save"></i> Salvar
+          <i class="bi bi-save"></i> {{ isEditMode ? 'Atualizar' : 'Salvar' }}
         </button>
       </div>
     </form>

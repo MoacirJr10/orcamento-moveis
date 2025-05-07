@@ -1,14 +1,71 @@
-
-.loading-spinner {
-  text-align: center;
-  padding: 2rem;
+.card {
+  max-width: 1200px;
+  margin: 2rem auto;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
 }
 
-.table {
-  width: 100%;
-  margin-top: 1rem;
+.card-header {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+  padding: 1.25rem 1.5rem;
 }
 
-.btn {
-  margin-right: 0.5rem;
+.card-header h5 {
+  margin: 0;
+  font-weight: 600;
+}
+
+.table th {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.table th[scope="col"] {
+  cursor: pointer;
+}
+
+.table th:hover {
+  background-color: #f1f1f1;
+}
+
+.badge {
+  font-size: 0.875em;
+  font-weight: 500;
+  padding: 0.35em 0.65em;
+}
+
+.btn-group-sm .btn {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+}
+
+.spinner-border {
+  width: 3rem;
+  height: 3rem;
+}
+
+/* Paginação */
+.pagination {
+  margin-bottom: 0;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .card {
+    margin: 1rem;
+  }
+
+  .table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .btn-group {
+    flex-wrap: wrap;
+    gap: 0.25rem;
+  }
+
+  .btn-group .btn {
+    margin-right: 0;
+  }
 }

@@ -1,23 +1,100 @@
-<div class="container-fluid p-0">
-
-  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+<div class="app-container">
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
     <div class="container">
-      <a class="navbar-brand" routerLink="/">
-        <i class="bi bi-house-gear me-2"></i>Orçamento de Móveis
+      <a class="navbar-brand d-flex align-items-center" routerLink="/" aria-label="Página inicial">
+        <i class="bi bi-house-gear-fill me-2"></i>
+        <span class="fw-bold">Orçamento de Móveis</span>
       </a>
-      <div class="navbar-nav">
-        <a class="nav-link" routerLink="/" routerLinkActive="active">
-          <i class="bi bi-list-check me-1"></i> Lista de Orçamentos
-        </a>
-        <a class="nav-link" routerLink="/novo" routerLinkActive="active">
-          <i class="bi bi-plus-circle me-1"></i> Novo Orçamento
-        </a>
+
+      <button class="navbar-toggler" type="button"
+              (click)="isNavCollapsed = !isNavCollapsed"
+              [attr.aria-expanded]="!isNavCollapsed"
+              aria-label="Alternar navegação">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" [ngbCollapse]="isNavCollapsed">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link d-flex align-items-center"
+               routerLink="/orcamentos"
+               routerLinkActive="active"
+               [routerLinkActiveOptions]="{exact: true}">
+              <i class="bi bi-file-earmark-text me-2"></i>
+              <span>Orçamentos</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link d-flex align-items-center"
+               routerLink="/orcamentos/novo"
+               routerLinkActive="active">
+              <i class="bi bi-plus-circle me-2"></i>
+              <span>Novo Orçamento</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link d-flex align-items-center"
+               routerLink="/relatorios"
+               routerLinkActive="active">
+              <i class="bi bi-graph-up me-2"></i>
+              <span>Relatórios</span>
+            </a>
+          </li>
+        </ul>
+
+        <div class="d-flex ms-lg-3 mt-2 mt-lg-0">
+          <app-user-menu></app-user-menu>
+        </div>
       </div>
     </div>
   </nav>
 
-
-  <main class="container my-4">
-    <router-outlet></router-outlet>
+  <!-- Conteúdo Principal -->
+  <main class="main-content">
+    <div class="container py-4">
+      <router-outlet></router-outlet>
+    </div>
   </main>
+
+  <!-- Footer -->
+  <footer class="bg-light text-center text-lg-start border-top">
+    <div class="container p-4">
+      <div class="row">
+        <div class="col-lg-6 col-md-12 mb-4 mb-md-0">
+          <h5 class="text-uppercase">Orçamento de Móveis</h5>
+          <p>
+            Sistema especializado para criação e gerenciamento de orçamentos para móveis planejados.
+          </p>
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+          <h5 class="text-uppercase">Links</h5>
+          <ul class="list-unstyled">
+            <li>
+              <a routerLink="/sobre" class="text-dark">Sobre</a>
+            </li>
+            <li>
+              <a routerLink="/contato" class="text-dark">Contato</a>
+            </li>
+            <li>
+              <a routerLink="/termos" class="text-dark">Termos de Uso</a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+          <h5 class="text-uppercase">Contato</h5>
+          <ul class="list-unstyled">
+            <li><i class="bi bi-envelope me-2"></i> contato@orcamentomoveis.com</li>
+            <li><i class="bi bi-telephone me-2"></i> (11) 99999-9999</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-center p-3 bg-primary text-white">
+      © {{ currentYear }} Orçamento de Móveis. Todos os direitos reservados.
+    </div>
+  </footer>
 </div>
